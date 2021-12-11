@@ -28,16 +28,32 @@ public class ShoppingCart {
     }
 
     private Double salesTaxRate;
+
+    public Double getSalesTax() {
+        return salesTax;
+
+    }
+
+    public void setSalesTax(Double salesTax) {
+        this.salesTax = salesTax;
+    }
+
     private Double salesTax;
     private Double total;
 
     ShoppingCart() {
         cart = new HashMap<>();
         total = 0.0;
+        salesTaxRate = 0.0;
     }
 
     public Double getTotal() {
-        return total;
+        for (Product k :cart.keySet()) {
+            total += k.getPrice()*cart.get(k);
+        }
+        total += calculateSalesTax();
+        System.out.println("total --- "+ total);
+        return round(total, 2);
     }
 
     public HashMap<Product, Integer> getCart() {
@@ -57,18 +73,17 @@ public class ShoppingCart {
             cart.put(product, quantity);
         }
 
-//         add price for the item and quantity
-        total += (product.getPrice() * quantity);
-        total = round(total, 2);
     }
 
-    void addSalesTax() {
+
+    Double calculateSalesTax() {
 
 //        calculate sales tax for this item and quantity
         salesTax = salesTaxRate * total;
+        salesTax = round(salesTax, 2);
+//        this.setSalesTax(salesTax);
+        return salesTax;
 
-        total += salesTax;
-        total = round(total, 2);
     }
 
     private static double round(double value, int places) {
@@ -78,4 +93,15 @@ public class ShoppingCart {
         return bd.doubleValue();
     }
 
+    public void remove(Product product, int quantity) {
+        if (cart.containsKey(product)) {
+            if(cart.get(product) >= quantity) {
+                cart.put(product, cart.get(product) - quantity);
+            } else {
+                    cart.put(product, 0);
+            }
+
+        }
+        System.out.println(cart.get(product));
+    }
 }

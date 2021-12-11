@@ -21,7 +21,7 @@ class ShoppingCartTest {
         productCatalog.add(axeDeo);
         shoppingCart = new ShoppingCart();
         shoppingCart.setProductCatalog(productCatalog);
-        shoppingCart.setSalesTaxRate(0.125);
+//        shoppingCart.setSalesTaxRate(0.125);
     }
 
     @Test
@@ -72,12 +72,29 @@ class ShoppingCartTest {
     public void whenMultipleItemsAndQuantitiesAddedToCartAggregateByItemAndCalculateTotalWithTax() {
         shoppingCart.addToCart(doveSoap, 2);
         shoppingCart.addToCart(axeDeo, 2);
-        shoppingCart.addSalesTax();
+        shoppingCart.setSalesTaxRate(0.125);
 
         assertEquals(shoppingCart.getCart().size(), 2);
         assertEquals(shoppingCart.getCart().get(doveSoap), 2);
         assertEquals(shoppingCart.getCart().get(axeDeo), 2);
         assertEquals(314.96, shoppingCart.getTotal());
+        assertEquals(35, shoppingCart.getSalesTax());
+
     }
+
+    @Test
+    public void whenAnItemIsRemovedCartTotalAndTaxGetUpdated() {
+        shoppingCart.setSalesTaxRate(0.125);
+        shoppingCart.addToCart(doveSoap, 4);
+        shoppingCart.addToCart(axeDeo, 2);
+
+        shoppingCart.remove(doveSoap, 1);
+
+        assertEquals(3, shoppingCart.getCart().get(doveSoap));
+        assertEquals( 359.94, shoppingCart.getTotal());
+        assertEquals(39.99, shoppingCart.getSalesTax());
+
+    }
+
 
 }
